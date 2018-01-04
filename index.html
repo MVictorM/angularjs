@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="en">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+
+<div ng-app="myApp" ng-controller="formCtrl">
+    <form novalidate>
+        Nome:<br>
+        <input type="text" ng-model="nome"><br>
+        Email:<br>
+        <input type="email" ng-model="email">
+        Senha:<br>
+        <input type="password" ng-model="senha">
+        <br><br>
+        <button ng-click="reset()">RESET</button>
+    </form>
+</div>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('formCtrl', function ($scope, $http) {
+        $scope.nome = '';
+        $scope.email = '';
+        $scope.senha = '';
+        $scope.retornoCadastro = '';
+        $scope.users = '';
+
+        $scope.cadastro = function () {
+            $http.get("http://victormm.pe.hu/users/cadastro")
+
+                .then(function (response) {
+                    $scope.retornoCadastro = response.data;
+                });
+
+        };
+        $scope.getUsers = function () {
+            $http.get("http://victormm.pe.hu/users/lista")
+                .then(function (response) {
+                    $scope.users = response.data;
+                });
+        };
+
+        $scope.reset = function () {
+            $scope.nome = '';
+            $scope.email = '';
+            $scope.senha = '';
+        }
+
+    });
+</script>
+
+</body>
+</html></title>
+</head>
+<body>
+
+</body>
+</html>
