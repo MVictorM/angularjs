@@ -25,12 +25,21 @@
         <button type="button" ng-click="getUsers()">Atualizar</button>
     </form>
 
-    <table>
+    <table ng-show="users.length > 0">
+        <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nome</th>
+            <th>Senha</th>
+        </tr>
+        </thead>
+        <tbody>
         <tr ng-repeat="user in users">
-            <td>{{ user.User.id }}</td>
+            <td style="text-align: center">{{ user.User.id }}</td>
             <td>{{ user.User.nome }}</td>
             <td>{{ user.User.username }}</td>
         </tr>
+        </tbody>
     </table>
 
 </div>
@@ -43,30 +52,44 @@
         $scope.senha = '';
         $scope.retornoCadastro = '';
         $scope.users = '';
-        $scope.dados = {'User' :{'nome': $scope.nome, 'username': $scope.email, "senha": $scope.senha}};
         $scope.urlLista = "http://victormm.pe.hu/users/lista";
+        $scope.urlCadastro = "http://victormm.pe.hu/users/cadastro";
 
         $scope.cadastro = function () {
-            console.log($scope.dados);
+            var dados = {
+                User: {
+                    nome: $scope.nome,
+                    username: $scope.email,
+                    password: $scope.senha
+                }
+            };
             $http({
-                method : "POST",
-                url : "http://victormm.pe.hu/users/cadastro",
-                data: { 'User' : $scope.dados}
+                method: "POST",
+                url: "http://victormm.pe.hu/users/cadastro",
+                data: dados
             }).then(function mySuccess(response) {
-                $scope.retornoCadastro = response.data;
+                if(response.data === false) {
+                    alert("Não foi possível criar o usuário.");
+                } else {
+                    alert("O usuário " + response.data.User.nome + " foi criado com sucesso.");
+                    $scope.getUsers();
+                    $scope.reset();
+                }
             }, function myError(response) {
-                $scope.retornoCadastro = response.statusText;
+                alert("Não foi possível criar o usuário.");
+                console.log(response);
             });
+
         };
         $scope.getUsers = function () {
 
-            $http({method: 'GET', url:$scope.urlLista})
+            $http({method: 'GET', url: $scope.urlLista})
                 .then(
-                    function(json) {
+                    function (json) {
                         $scope.users = json.data;
                     },
-                    function(error) {
-                        console.log('An error occured');
+                    function (error) {
+                        console.log(error);
                     }
                 );
         };
